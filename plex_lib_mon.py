@@ -1,29 +1,22 @@
 import os
 import time
-import inotify
-
-# Create an inotify object
-inotify_obj = inotify.adapters.Inotify()
+import inotify.adapters
+import inotify.constants
 
 # Watch the specific directory and its subdirectories
-watch_dir = "./testDir" 
-inotify_obj.add_watch(watch_dir, mask=inotify.constants.IN_CREATE | inotify.constants.IN_CREATE | inotify.constants.IN_MOVED_TO)
+watch_dir = "./testDir"
+
+# Create an inotify object
+inotify_obj = inotify.adapters.InotifyTree(watch_dir, mask=inotify.constants.IN_CREATE)
 
 # Continuously monitor for events
 try:
-    for event in inotify_obj.event_gen():
-        (header, type_names, mask, filename) = event
+    for event in inotify_obj.event_gen(yield_nones=False):
+        (_, type_names, path, filename) = event
 
-        if filename is None:
-            continue
+        print("{}\tSETFACL: {}/{}".format(time.strftime("[%Y-%m-%d | %I:%M:%S %p]"), path, filename))
 
-        if "CREATE" in type_names:
-            print(f"File/Directory created: {os.path.join(header.wd, filename)}")
+        # set file/directory permissions
 
 except KeyboardInterrupt:
     print("\nMonitoring stopped.")
-
-# Remove watches and close the inotify object
-for wd in inotify_obj.watches:
-    inotify_obj.remove_watch(wd)
-inotify_obj.close()
