@@ -18,7 +18,7 @@ echo "PID: $PID python test started"
 sleep 1
 create_dir_and_files
 sleep 1
-kill $PID
+pkill -f plex_lib_mon.py
 echo "PID: $PID python test killed"
 
 # delete files and directories
@@ -31,7 +31,7 @@ echo "PID: $PID bash test started"
 sleep 1
 create_dir_and_files
 sleep 1
-kill $PID
+pkill -f plex_lib_mon.sh
 echo "PID: $PID bash test killed"
 
 # delete files and directories
