@@ -14,6 +14,10 @@ create_dir_and_files() {
 kill_sub_processes() {
     PARENT_PID=$1
     MSG=$2
+    if ! kill -0 $PARENT_PID 2>/dev/null; then
+        echo "PARENT PID: $PARENT_PID does not exist"
+        return
+    fi
     CHILD_PIDS=$(pgrep -P $PARENT_PID)
     for PID in $CHILD_PIDS; do
         kill $PID
@@ -25,6 +29,7 @@ kill_sub_processes() {
 }
 
 # Run Python test
+mkdir testDir
 python plex_lib_mon.py &
 PARENT_PID=$!
 echo "PARENT PID: $PARENT_PID python test started"
@@ -37,6 +42,7 @@ kill_sub_processes $PARENT_PID "python test"
 rm -rf testDir
 
 # Run Bash test
+mkdir testDir
 bash plex_lib_mon.sh &
 PARENT_PID=$!
 echo "PARENT PID: $PARENT_PID bash test started"
