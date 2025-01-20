@@ -1,38 +1,49 @@
 #!/bin/bash
 
-# function to create files and directories
+# Function to create files and directories
 create_dir_and_files() {
-    mkdir testDir
-    mkdir testDir/A
-    mkdir testDir/B
-    mkdir testDir/C
+    mkdir -p testDir/A
+    mkdir -p testDir/B
+    mkdir -p testDir/C
     echo "Hello World" > testDir/A/a.txt
     echo "Hello World" > testDir/B/b.txt
     echo "Hello World" > testDir/C/c.txt
 }
 
-# run python test
+# function to kill all sub processes created by this script
+kill_sub_processes() {
+    PARENT_PID=$1
+    MSG=$2
+    CHILD_PIDS=$(pgrep -P $PARENT_PID)
+    for PID in $CHILD_PIDS; do
+        kill $PID
+        echo "Killed child PID: $PID"
+    done
+    # Kill the parent process
+    kill $PARENT_PID
+    echo "Killed parent PID: $PARENT_PID $MSG"
+}
+
+# Run Python test
 python plex_lib_mon.py &
-PID=$!
-echo "PID: $PID python test started"
+PARENT_PID=$!
+echo "PARENT PID: $PARENT_PID python test started"
 sleep 1
 create_dir_and_files
 sleep 1
-pkill -f plex_lib_mon.py
-echo "PID: $PID python test killed"
+kill_sub_processes $PARENT_PID "python test"
 
-# delete files and directories
+# Delete files and directories
 rm -rf testDir/*
 
-# run bash test
+# Run Bash test
 bash plex_lib_mon.sh &
-PID=$!
-echo "PID: $PID bash test started"
+PARENT_PID=$!
+echo "PARENT PID: $PARENT_PID bash test started"
 sleep 1
 create_dir_and_files
 sleep 1
-pkill -f plex_lib_mon.sh
-echo "PID: $PID bash test killed"
+kill_sub_processes $PARENT_PID "bash test"
 
-# delete files and directories
+# Delete files and directories
 rm -rf testDir/*
