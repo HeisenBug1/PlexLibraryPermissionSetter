@@ -34,7 +34,7 @@ sleep 1
 kill_sub_processes $PARENT_PID "python test"
 
 # Delete files and directories
-rm -rf testDir/*
+rm -rf testDir
 
 # Run Bash test
 bash plex_lib_mon.sh &
@@ -46,4 +46,4 @@ sleep 1
 kill_sub_processes $PARENT_PID "bash test"
 
 # Delete files and directories
-rm -rf testDir/*
+rm -rf testDir
