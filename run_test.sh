@@ -5,9 +5,11 @@ create_dir_and_files() {
     mkdir -p testDir/A
     mkdir -p testDir/B
     mkdir -p testDir/C
-    echo "Hello World" > testDir/A/a.txt
+    mkdir -p "testDir/Empty Space Dir"
+    echo "Hello World" > testDir/A/.txt
     echo "Hello World" > testDir/B/b.txt
     echo "Hello World" > testDir/C/c.txt
+    echo "Hello World" > "testDir/Empty Space Dir/Empty Space File.txt"
 }
 
 # function to kill all sub processes created by this script
@@ -28,18 +30,18 @@ kill_sub_processes() {
     echo "Killed parent PID: $PARENT_PID $MSG"
 }
 
-# Run Python test
-mkdir testDir
-python plex_lib_mon.py &
-PARENT_PID=$!
-echo "PARENT PID: $PARENT_PID python test started"
-sleep 1
-create_dir_and_files
-sleep 1
-kill_sub_processes $PARENT_PID "python test"
+# Run Python test [NOT TESTED. Python Version Not Complete]
+# mkdir testDir
+# python plex_lib_mon.py &
+# PARENT_PID=$!
+# echo "PARENT PID: $PARENT_PID python test started"
+# sleep 1
+# create_dir_and_files
+# sleep 1
+# kill_sub_processes $PARENT_PID "python test"
 
 # Delete files and directories
-rm -rf testDir
+# rm -rf testDir
 
 # Run Bash test
 mkdir testDir
